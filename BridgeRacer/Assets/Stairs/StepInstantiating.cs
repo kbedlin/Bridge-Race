@@ -16,30 +16,43 @@ public class StepInstantiating : MonoBehaviour
         Vector3 newStep = new Vector3(this.transform.position.x,
             iter * stepSize.x - stepSize.x / 2,
             this.transform.position.z + iter * stepSize.y + stepSize.y / 2);
-
-        if (collision.transform.position.z > newStep.z - stepSize.y / 2 &&
-            collision.transform.position.z < newStep.z + stepSize.y / 2)
+        Stack<Brick> bricks = collision.gameObject.GetComponent<BrickHolder>().bricks;
+        if (bricks.Count != 0)
         {
-            //Creates a step, sets it's color and adds to the list
-            GameObject stp = Instantiate(step, newStep, Quaternion.identity);
-            stp.transform.parent = this.transform;
-            stp.GetComponent<Renderer>().material.color = collision.gameObject.GetComponent<Renderer>().material.color;
-            steps.Add(stp);
-            iter++;
-        }
-        else //If the character of different color gets on already created step change that step's color
-        {
-            
-            GameObject stepBelow = FindTheStepBelow(collision);
-            if (stepBelow != null)
+            if (collision.transform.position.z > newStep.z - stepSize.y / 2 &&
+                collision.transform.position.z < newStep.z + stepSize.y / 2)
             {
-                var stepMaterial = stepBelow.GetComponent<Renderer>().material;
-                var collisionMaterial = collision.gameObject.GetComponent<Renderer>().material;
-                if (stepMaterial.color != collisionMaterial.color)
-                    stepMaterial.color = collisionMaterial.color;
+                //Creates a step, sets it's color and adds to the list
+                GameObject stp = Instantiate(step, newStep, Quaternion.identity);
+                stp.transform.parent = this.transform;
+                stp.GetComponent<Renderer>().material.color = collision.gameObject.GetComponent<Renderer>().material.color;
+                steps.Add(stp);
+                iter++;
+                Brick brick = bricks.Pop();
+                brick.transform.parent = null;
+                brick.transform.position = brick.originPosition;
+                brick.transform.rotation = Quaternion.identity;
             }
-        }
+            else //If the character of different color gets on already created step change that step's color
+            {
 
+                GameObject stepBelow = FindTheStepBelow(collision);
+                if (stepBelow != null)
+                {
+                    var stepMaterial = stepBelow.GetComponent<Renderer>().material;
+                    var collisionMaterial = collision.gameObject.GetComponent<Renderer>().material;
+                    if (stepMaterial.color != collisionMaterial.color)
+                    {
+                        stepMaterial.color = collisionMaterial.color;
+                        Brick brick = bricks.Pop();
+                        brick.transform.parent = null;
+                        brick.transform.position = brick.originPosition;
+                        brick.transform.rotation = Quaternion.identity;
+                    }
+                }
+            }
+            
+        }
     }
 
     private GameObject FindTheStepBelow(Collision collision) //Finds the step directly below the character
