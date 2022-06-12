@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StepInstantiating : MonoBehaviour
+public class StepManager : MonoBehaviour
 {
     public GameObject step; //Step prefab
     public List<GameObject> steps = new List<GameObject>(); //List of all steps in stairs
 
     int iter = 0; //Last step
     readonly Vector2 stepSize = new Vector2(0.173205f, 0.3f);
+
+    public float pushForce = 70;
 
     private void OnCollisionStay(Collision collision)
     {
@@ -28,15 +30,12 @@ public class StepInstantiating : MonoBehaviour
                 stp.GetComponent<Renderer>().material.color = collision.gameObject.GetComponent<Renderer>().material.color;
                 steps.Add(stp);
                 iter++;
-                Brick brick = bricks.Pop();
-                brick.transform.parent = null;
-                brick.transform.position = brick.originPosition;
-                brick.transform.rotation = Quaternion.identity;
+                ReturnBrick(bricks);
             }
             else //If the character of different color gets on already created step change that step's color
             {
 
-                GameObject stepBelow = FindTheStepBelow(collision);
+                GameObject stepBelow = FindTheStepBelow(collision.transform.position);
                 if (stepBelow != null)
                 {
                     var stepMaterial = stepBelow.GetComponent<Renderer>().material;
@@ -44,30 +43,50 @@ public class StepInstantiating : MonoBehaviour
                     if (stepMaterial.color != collisionMaterial.color)
                     {
                         stepMaterial.color = collisionMaterial.color;
-                        Brick brick = bricks.Pop();
-                        brick.transform.parent = null;
-                        brick.transform.position = brick.originPosition;
-                        brick.transform.rotation = Quaternion.identity;
+                        ReturnBrick(bricks);
                     }
                 }
             }
             
         }
+        else
+        {
+            GameObject stepBelow = FindTheStepBelow(collision.transform.position + new Vector3(0, 0, stepSize.y));
+            if (stepBelow == null)
+            {
+                return;
+            }
+            if (stepBelow.GetComponent<Renderer>().material.color != collision.gameObject.GetComponent<Renderer>().material.color)
+            {
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(0, 0, -pushForce), ForceMode.Impulse);
+            }
+        }
     }
 
-    private GameObject FindTheStepBelow(Collision collision) //Finds the step directly below the character
+    private GameObject FindTheStepBelow(Vector3 position) //Finds the step directly below the chosen coordinates
     {
         foreach (var step in steps)
         {
             Vector2 stepBorders = new Vector2(step.transform.position.z - stepSize.y / 2,
                 step.transform.position.z + stepSize.y / 2);
-            if (collision.transform.position.z > stepBorders.x &&
-                collision.transform.position.z < stepBorders.y)
+            if (position.z > stepBorders.x &&
+                position.z < stepBorders.y)
             {
                 return step; 
             }
                 
         }
         return null;
+    }
+
+
+
+    private void ReturnBrick(Stack<Brick> bricks)
+    {
+        Brick brick = bricks.Pop();
+        brick.transform.parent = null;
+        brick.transform.position = brick.originPosition;
+        brick.transform.rotation = Quaternion.identity;
+        brick.transform.parent = GameObject.Find("Bricks").transform;
     }
 }

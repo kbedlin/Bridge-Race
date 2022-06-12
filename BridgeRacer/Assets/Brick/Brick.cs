@@ -13,16 +13,16 @@ public class Brick : MonoBehaviour
         originColor = this.GetComponent<Renderer>().material.color;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if ((collision.gameObject.GetComponent<Renderer>().material.color == originColor ||
+        if ((other.gameObject.GetComponent<Renderer>().material.color == originColor ||
             this.GetComponent<Renderer>().material.color == Color.gray) &&
-            collision.gameObject.tag == "Player")
+            other.gameObject.tag == "Player")
         {
-            this.transform.parent = collision.gameObject.transform;
-            this.transform.rotation = collision.transform.rotation;
-            this.transform.localPosition = Vector3.back / 2 + new Vector3(0, 0.101f, 0) * collision.gameObject.transform.childCount;
-            collision.gameObject.GetComponent<BrickHolder>().bricks.Push(this);
+            this.transform.parent = other.gameObject.transform;
+            this.transform.rotation = other.transform.rotation;
+            this.transform.localPosition = Vector3.back / 2 + new Vector3(0, 0.101f, 0) * other.gameObject.transform.childCount;
+            other.gameObject.GetComponent<BrickHolder>().bricks.Push(this);
         }
     }
 }

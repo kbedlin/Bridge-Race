@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -17,10 +14,22 @@ public class PlayerMovement : MonoBehaviour
         characterControls.Player.Enable();
     }
 
-    private void FixedUpdate()
+    private void OnCollisionStay(Collision collision)
     {
         Vector2 inputVector = characterControls.Player.Move.ReadValue<Vector2>();
-        playerRigidbody.velocity = new Vector3(inputVector.x * speed, playerRigidbody.velocity.y, inputVector.y * speed);
+        playerRigidbody.velocity = new Vector3(
+            inputVector.x * speed, 
+            playerRigidbody.velocity.y, 
+            inputVector.y * speed);
+
+        if (inputVector.magnitude > 0)
+        {
+            this.transform.rotation = Quaternion.LookRotation(
+                new Vector3(
+                    playerRigidbody.velocity.x,
+                    0, 
+                    playerRigidbody.velocity.z));
+        }
     }
 
 }

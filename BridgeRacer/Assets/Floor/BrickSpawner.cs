@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class BrickSpawner : MonoBehaviour
 {
-    public GameObject brick;
+    public Brick brick;
 
     public List<Material> materials;
 
-    GameObject[,] brickMatrix;
+    public Brick[,] brickMatrix;
 
     int bricksPerUnit = 5;
 
@@ -17,7 +17,7 @@ public class BrickSpawner : MonoBehaviour
         int bricksOnZAxis = (int)(bricksPerUnit * this.transform.localScale.z);
         int bricksOnXAxis = (int)(bricksPerUnit * this.transform.localScale.x);
 
-        brickMatrix = new GameObject[bricksOnZAxis, bricksOnXAxis];
+        brickMatrix = new Brick[bricksOnZAxis, bricksOnXAxis];
         SpawnBricks(bricksOnZAxis, bricksOnXAxis);
     }
 
@@ -30,7 +30,8 @@ public class BrickSpawner : MonoBehaviour
         float up = this.transform.position.z + height / 2 - 1;
 
         int[] colorsCount = new int[5];
-        
+
+        Transform bricksStashTransform = GameObject.Find("Bricks").transform;
 
         for (int i = 0; i < bricksOnZAxis; i++)
         {
@@ -40,6 +41,8 @@ public class BrickSpawner : MonoBehaviour
                     new Vector3(left + j * width / bricksOnXAxis, 0.05f, up - i * height / bricksOnZAxis),
                     Quaternion.identity);
                 brickMatrix[i, j].GetComponent<Renderer>().material.color = GetColor(colorsCount);
+                brickMatrix[i, j].transform.parent = bricksStashTransform;
+                brickMatrix[i, j].gameObject.SetActive(false);
             }
         }
     }
