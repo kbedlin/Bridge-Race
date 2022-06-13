@@ -38,7 +38,9 @@ public class BrickSpawner : MonoBehaviour
             for (int j = 0; j < bricksOnXAxis; j++)
             {
                 brickMatrix[i, j] = Instantiate(brick, 
-                    new Vector3(left + j * width / bricksOnXAxis, 0.05f, up - i * height / bricksOnZAxis),
+                    new Vector3(left + j * width / bricksOnXAxis,
+                        this.transform.position.y + 0.05f, 
+                        up - i * height / bricksOnZAxis),
                     Quaternion.identity);
                 brickMatrix[i, j].GetComponent<Renderer>().material.color = GetColor(colorsCount);
                 brickMatrix[i, j].transform.parent = bricksStashTransform;

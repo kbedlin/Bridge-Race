@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7608201847433383213}
   m_Layer: 0
   m_Name: Floor
-  m_TagString: Untagged
+  m_TagString: Stairs
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,7 +111,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   brick: {fileID: -7299785257470089088, guid: f5595f82c0e0b77448d2240a10ce9899, type: 3}
-  materials: []
+  materials:
+  - {fileID: 2100000, guid: 2e7ab1c0534b4a444af4eaeb6451bfac, type: 2}
+  - {fileID: 2100000, guid: 3a05fabd5caa9c046b1cafbf76ef4822, type: 2}
+  - {fileID: 2100000, guid: 4638f9cc115448d409f1807601579c2c, type: 2}
+  - {fileID: 2100000, guid: 830f7c9095837d24084736723a33525d, type: 2}
+  - {fileID: 2100000, guid: 42b85d6e69d61c149a7c773cd494216a, type: 2}
 --- !u!114 &7608201847433383213
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ public class StepManager : MonoBehaviour
     {
         //Position of the next step that will be added to the stairs
         Vector3 newStep = new Vector3(this.transform.position.x,
-            iter * stepSize.x - stepSize.x / 2,
+            iter * stepSize.x - stepSize.x / 2 + this.transform.position.y,
             this.transform.position.z + iter * stepSize.y + stepSize.y / 2);
         Stack<Brick> bricks = collision.gameObject.GetComponent<BrickHolder>().bricks;
         if (bricks.Count != 0)
@@ -26,7 +26,7 @@ public class StepManager : MonoBehaviour
             {
                 //Creates a step, sets it's color and adds to the list
                 GameObject stp = Instantiate(step, newStep, Quaternion.identity);
-                stp.transform.parent = this.transform;
+                stp.transform.parent = this.transform.parent;
                 stp.GetComponent<Renderer>().material.color = collision.gameObject.GetComponent<Renderer>().material.color;
                 steps.Add(stp);
                 iter++;
