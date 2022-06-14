@@ -16,10 +16,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
+        Move();
+    }
+
+    private void Move()
+    {
         Vector2 inputVector = characterControls.Player.Move.ReadValue<Vector2>();
         playerRigidbody.velocity = new Vector3(
-            inputVector.x * speed, 
-            playerRigidbody.velocity.y, 
+            inputVector.x * speed,
+            playerRigidbody.velocity.y,
             inputVector.y * speed);
 
         if (inputVector.magnitude > 0)
@@ -27,9 +32,8 @@ public class PlayerMovement : MonoBehaviour
             this.transform.rotation = Quaternion.LookRotation(
                 new Vector3(
                     playerRigidbody.velocity.x,
-                    0, 
+                    0,
                     playerRigidbody.velocity.z));
         }
     }
-
 }
