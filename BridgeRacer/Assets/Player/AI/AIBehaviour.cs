@@ -16,9 +16,8 @@ public class AIBehaviour : MonoBehaviour
 
     State state = State.PickUpBricks;
     public Vector3 destination;
-    public Vector3 startingPosition;
 
-    float speed = 5;
+    public float speed = 5;
 
     Rigidbody body;
 
@@ -27,6 +26,7 @@ public class AIBehaviour : MonoBehaviour
     GameObject[] stairs;
 
     bool atStairs = false;
+    bool canMove = false;
 
     void Start()
     {
@@ -38,15 +38,16 @@ public class AIBehaviour : MonoBehaviour
         bricks = this.GetComponent<BrickHolder>().bricks;
 
         destination = this.transform.position;
-        startingPosition = this.transform.position;
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void FixedUpdate()
     {
+        if (!canMove)
+            return;
         switch (state)
         {
             case State.PickUpBricks:
-                if (Vector3.Distance(destination, this.transform.position) < 1f)
+                if (Vector3.Distance(destination, this.transform.position) < 1)
                 {
                     if (bricks.Count >= 5)
                     {
@@ -54,17 +55,15 @@ public class AIBehaviour : MonoBehaviour
                         break;
                     }
                     destination = FindClosePickableBrick();
-                    startingPosition = this.transform.position;
                 }
-                Move(destination, startingPosition);
+                Move(destination);
                 break;
             case State.GoToStairs:
-                if (Vector3.Distance(destination, this.transform.position) < 1.5f)
+                if (Vector3.Distance(destination, this.transform.position) < 1)
                 {
                     if (!atStairs)
                     {
-                        destination = FindBestStairs();
-                        startingPosition = this.transform.position;
+                        destination = FindBestStairs() + Vector3.back;
                         atStairs = !atStairs;
                     }
                     else
@@ -74,24 +73,28 @@ public class AIBehaviour : MonoBehaviour
                         break;
                     }    
                 }
-                Move(destination, startingPosition);
+                Move(destination);
 
                 break;
             case State.BuildBridge:
+                if (bricks.Count != 0)
+                {
+                    Move(this.transform.position + Vector3.forward);
+                    return;
+                }
+                else
+                {
+                    state = State.PickUpBricks;
+                }
                 break;
         }
 
     }
 
-    private void Move(Vector3 destination, Vector3 position)
+    private void Move(Vector3 destination)
     {
-        body.velocity = (destination - position).normalized * speed;
-
-        this.transform.rotation = Quaternion.LookRotation(
-                new Vector3(
-                    body.velocity.x,
-                    0,
-                    body.velocity.z));
+        this.transform.LookAt(new Vector3(destination.x, this.transform.position.y, destination.z));
+        body.velocity = transform.forward.normalized * speed;
     }
 
     private Vector3 FindBestStairs()
@@ -110,7 +113,7 @@ public class AIBehaviour : MonoBehaviour
                 stairsPos = st.transform.position;
             }
         }
-        return stairsPos;
+        return stairsPos + Vector3.up;
     }
 
     private Vector3 FindClosePickableBrick()
@@ -137,6 +140,16 @@ public class AIBehaviour : MonoBehaviour
                 brickPos = bricksParent.GetChild(i).transform.position;
             }
         }
-        return brickPos;
+        return brickPos + Vector3.up;
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        canMove = true;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        canMove = false;
     }
 }

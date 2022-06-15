@@ -15,14 +15,30 @@ public class Brick : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if ((other.gameObject.GetComponent<Renderer>().material.color == originColor ||
-            this.GetComponent<Renderer>().material.color == Color.gray) &&
+        if (other.gameObject.GetComponent<Renderer>().material.color == originColor &&
             other.gameObject.tag == "Player")
         {
-            this.transform.parent = other.gameObject.transform;
-            this.transform.rotation = other.transform.rotation;
-            this.transform.localPosition = Vector3.back / 2 + new Vector3(0, 0.101f, 0) * other.gameObject.transform.childCount;
-            other.gameObject.GetComponent<BrickHolder>().bricks.Push(this);
+            PushBrick(other.gameObject);
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (this.GetComponent<Renderer>().material.color == Color.gray &&
+            collision.gameObject.tag == "Player")
+        {
+            PushBrick(collision.gameObject);
+            this.GetComponent<Renderer>().material.color = collision.gameObject.GetComponent<Renderer>().material.color;
+            this.GetComponent<Collider>().isTrigger = true;
+            Destroy(this.GetComponent<Rigidbody>());
+        }
+    }
+
+    private void PushBrick(GameObject collider)
+    {
+        this.transform.parent = collider.transform;
+        this.transform.rotation = collider.transform.rotation;
+        this.transform.localPosition = Vector3.back / 1.5f + new Vector3(0, 0.105f, 0) * collider.gameObject.transform.childCount;
+        collider.gameObject.GetComponent<BrickHolder>().bricks.Push(this);
     }
 }

@@ -5,6 +5,8 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody playerRigidbody;
     CharacterControls characterControls;
 
+    bool canMove = false;
+
     float speed = 5;
 
     private void Awake()
@@ -14,9 +16,10 @@ public class PlayerMovement : MonoBehaviour
         characterControls.Player.Enable();
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void FixedUpdate()
     {
-        Move();
+        if (canMove)
+            Move();
     }
 
     private void Move()
@@ -35,5 +38,15 @@ public class PlayerMovement : MonoBehaviour
                     0,
                     playerRigidbody.velocity.z));
         }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        canMove = true;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        canMove = false;
     }
 }

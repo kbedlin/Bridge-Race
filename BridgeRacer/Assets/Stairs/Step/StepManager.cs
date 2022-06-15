@@ -14,6 +14,8 @@ public class StepManager : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
+        if (collision.gameObject.tag != "Player")
+            return;
         //Position of the next step that will be added to the stairs
         Vector3 newStep = new Vector3(this.transform.position.x,
             iter * stepSize.x - stepSize.x / 2 + this.transform.position.y,
