@@ -81,14 +81,9 @@ public class StepManager : MonoBehaviour
         return null;
     }
 
-
-
     private void ReturnBrick(Stack<Brick> bricks)
     {
         Brick brick = bricks.Pop();
-        brick.transform.parent = null;
-        brick.transform.position = brick.originPosition;
-        brick.transform.rotation = Quaternion.identity;
-        brick.transform.parent = GameObject.Find("Bricks").transform;
+        brick.GoOrigin();
     }
 }

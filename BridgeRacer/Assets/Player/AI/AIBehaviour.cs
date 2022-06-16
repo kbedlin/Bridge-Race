@@ -25,6 +25,8 @@ public class AIBehaviour : MonoBehaviour
 
     GameObject[] stairs;
 
+    int floor = 0;
+
     bool atStairs = false;
     bool canMove = false;
 
@@ -80,6 +82,12 @@ public class AIBehaviour : MonoBehaviour
                 if (bricks.Count != 0)
                 {
                     Move(this.transform.position + Vector3.forward);
+                    if (this.transform.position.y >= floor * 5 + 5)
+                    {
+                        floor++;
+                        destination = FindClosePickableBrick();
+                        state = State.PickUpBricks;
+                    }
                     return;
                 }
                 else
@@ -94,7 +102,7 @@ public class AIBehaviour : MonoBehaviour
     private void Move(Vector3 destination)
     {
         this.transform.LookAt(new Vector3(destination.x, this.transform.position.y, destination.z));
-        body.velocity = transform.forward.normalized * speed;
+        body.velocity = new Vector3(transform.forward.x * speed, body.velocity.y, transform.forward.z * speed);
     }
 
     private Vector3 FindBestStairs()
@@ -113,7 +121,7 @@ public class AIBehaviour : MonoBehaviour
                 stairsPos = st.transform.position;
             }
         }
-        return stairsPos + Vector3.up;
+        return stairsPos;
     }
 
     private Vector3 FindClosePickableBrick()
@@ -124,8 +132,7 @@ public class AIBehaviour : MonoBehaviour
         for (int i = 0; i < bricksParent.childCount; i++)
         {
             if ((color == bricksParent.GetChild(i).GetComponent<Renderer>().material.color ||
-                color == Color.gray) &&
-                bricksParent.GetChild(i).gameObject.activeSelf)
+                color == Color.gray))
             {
                 distance = (this.transform.position - bricksParent.GetChild(i).transform.position).magnitude;
             }
@@ -140,16 +147,28 @@ public class AIBehaviour : MonoBehaviour
                 brickPos = bricksParent.GetChild(i).transform.position;
             }
         }
-        return brickPos + Vector3.up;
+        return brickPos;
     }
 
     private void OnCollisionStay(Collision collision)
     {
-        canMove = true;
+        if (collision.gameObject.tag != "Player")
+        {
+            canMove = true;
+            return;
+        }
+
+        canMove = false;
+        Invoke("MoveAgain", 1);
     }
 
     private void OnCollisionExit(Collision collision)
     {
         canMove = false;
+    }
+
+    private void MoveAgain()
+    {
+        canMove = true;
     }
 }

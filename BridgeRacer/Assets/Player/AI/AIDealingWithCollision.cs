@@ -14,17 +14,17 @@ public class AIDealingWithCollision : MonoBehaviour
         speed = GetComponent<AIBehaviour>().speed;
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
-        //if (collision.gameObject.tag != "Wall")
-        //{
-        //    return;
-        //}
-        if (collision.gameObject.transform.position.x < this.transform.position.x)
+
+        if (!(collision.gameObject.tag == "Floor" || collision.gameObject.tag == "Stairs"))
+            return;
+
+        if (this.transform.position.x < collision.gameObject.transform.position.x)
         {
             body.velocity = Vector3.right * speed;
         }
-        if (collision.gameObject.transform.position.x > this.transform.position.x)
+        else
         {
             body.velocity = Vector3.left * speed;
         }

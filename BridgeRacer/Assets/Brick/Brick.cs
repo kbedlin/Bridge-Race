@@ -38,7 +38,16 @@ public class Brick : MonoBehaviour
     {
         this.transform.parent = collider.transform;
         this.transform.rotation = collider.transform.rotation;
-        this.transform.localPosition = Vector3.back / 1.5f + new Vector3(0, 0.105f, 0) * collider.gameObject.transform.childCount;
+        this.transform.localPosition = Vector3.back / 4.5f + Vector3.up / 4 + new Vector3(0, 0.07f, 0) * collider.gameObject.transform.childCount;
         collider.gameObject.GetComponent<BrickHolder>().bricks.Push(this);
+    }
+
+    public void GoOrigin()
+    {
+        this.transform.parent = null;
+        this.GetComponent<Renderer>().material.color = originColor;
+        this.transform.position = originPosition;
+        this.transform.rotation = Quaternion.identity;
+        this.transform.parent = GameObject.Find("Bricks").transform;
     }
 }
