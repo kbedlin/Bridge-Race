@@ -16,10 +16,16 @@ public class RigidbodiesCatcher : MonoBehaviour
         if (other.gameObject.name == "You")
         {
             gameManager.loseGame();
+            return;
         }
 
         if (other.gameObject.tag == "Player")
         {
+            Stack<Brick> bricks = other.gameObject.GetComponent<BrickHolder>().bricks;
+            for (int i = 0; i < bricks.Count; i++)
+            {
+                bricks.Pop().GoOrigin();
+            }
             Destroy(other.gameObject);
             return;
         }

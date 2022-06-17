@@ -3,11 +3,13 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     Rigidbody playerRigidbody;
-    CharacterControls characterControls;
+    public CharacterControls characterControls;
 
     bool canMove = false;
 
     float speed = 5;
+
+    public Vector2 inputVector = Vector2.zero;
 
     private void Awake()
     {
@@ -24,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        Vector2 inputVector = characterControls.Player.Move.ReadValue<Vector2>();
+        inputVector = characterControls.Player.Move.ReadValue<Vector2>();
         playerRigidbody.velocity = new Vector3(
             inputVector.x * speed,
             playerRigidbody.velocity.y,

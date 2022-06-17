@@ -11,12 +11,20 @@ public class ShowText : MonoBehaviour
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         gameManager.endGame += Show;
+        gameManager.loseGame += Show;
     }
 
     private void Show(string winner)
     {
         Text text = this.GetComponent<Text>();
         text.text = winner + " won!";
+        text.enabled = true;
+    }
+
+    private void Show()
+    {
+        Text text = this.GetComponent<Text>();
+        text.text = "You lost!";
         text.enabled = true;
     }
 }

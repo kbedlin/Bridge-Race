@@ -35,6 +35,12 @@ public class BrickHolder : MonoBehaviour
                     brick.GetComponent<Collider>().isTrigger = false;
                     brick.GetComponent<Rigidbody>().AddRelativeForce((Vector3.back + Vector3.up) * brickPushForce, ForceMode.Impulse);
                 }
+                return;
+            }
+            if (bricks.Count == collision.gameObject.GetComponent<BrickHolder>().bricks.Count)
+            {
+                this.transform.LookAt(collision.gameObject.transform.position + Vector3.up / 2);
+                this.GetComponent<Rigidbody>().AddRelativeForce((Vector3.back * pushBackForce + Vector3.up * pushUpForce) / 3, ForceMode.Impulse);
             }
         }
     }
