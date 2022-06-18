@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class WallMovement : MonoBehaviour
 {
+    //Tablica wszystkich pod³óg na poziomie
     GameObject[] floors;
+    //Platforma finishu
     GameObject finish;
 
     private void Start()
@@ -15,6 +17,7 @@ public class WallMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //Jeœli œcianê dotknie gracz i gracz ma przynajmniej jedn¹ ceg³ê przesuñ œcianê do przodu w osi z
         if (collision.gameObject.tag == "Player")
         {
             if (collision.gameObject.GetComponent<BrickHolder>().bricks.Count > 0)
@@ -24,7 +27,7 @@ public class WallMovement : MonoBehaviour
             }
         }
     }
-
+    //Jeœli ta œciana znajdzie siê w pod³odze lub w platformie finishu, zniszcz j¹ 
     private void CheckIfShouldBeDestroyed()
     {
         foreach (var floor in floors)

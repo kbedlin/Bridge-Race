@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour
 {
+    //Pierwotny kolor ceg³y i jej pierwotna pozycja
     public Vector3 originPosition;
     public Color originColor;
 
     private void Start()
     {
+        //Ustawia pierwotne parametry cegie³ki
         originPosition = this.transform.position;
         originColor = this.GetComponent<Renderer>().material.color;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        //Jeœli przez ciegie³kê przechodzi gracz o tym samym kolorze zabiera t¹ cegie³kê do "plecaka"
         if (other.gameObject.GetComponent<Renderer>().material.color == originColor &&
             other.gameObject.tag == "Player")
         {
@@ -24,6 +27,7 @@ public class Brick : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //Jeœli cegie³ka wypad³a graczowi mo¿e j¹ podnieœæ ka¿dy 
         if (this.GetComponent<Renderer>().material.color == Color.gray &&
             collision.gameObject.tag == "Player")
         {
@@ -34,6 +38,7 @@ public class Brick : MonoBehaviour
         }
     }
 
+    //Ustawia cegie³kê w "plecaku" gracza
     private void PushBrick(GameObject collider)
     {
         this.transform.parent = collider.transform;
@@ -42,6 +47,7 @@ public class Brick : MonoBehaviour
         collider.gameObject.GetComponent<BrickHolder>().bricks.Push(this);
     }
 
+    //Przywraca cegie³kê do pierwotnej pozycji
     public void GoOrigin()
     {
         this.transform.parent = null;
@@ -49,5 +55,8 @@ public class Brick : MonoBehaviour
         this.transform.position = originPosition;
         this.transform.rotation = Quaternion.identity;
         this.transform.parent = GameObject.Find("Bricks").transform;
+        if (this.TryGetComponent<Rigidbody>(out Rigidbody body))
+            Destroy(body);
+        this.GetComponent<Collider>().isTrigger = true;
     }
 }

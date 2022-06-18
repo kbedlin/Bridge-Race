@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour 
 {
+    //Delegaty wywo³ywane na zakoñczenie gry
     public delegate void EndGame(string winner);
     public delegate void LoseGame();
 

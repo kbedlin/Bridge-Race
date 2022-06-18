@@ -6,11 +6,13 @@ public class BrickShower : MonoBehaviour
 
     private void Start()
     {
+        //Pobiera macierz cegie³ek z BrickSpawnera
         brickMatrix = GetComponent<BrickSpawner>().brickMatrix;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        //Jeœli gracz wchodzi na pod³ogê to ujawiane s¹ wszystkie cegie³ki o kolorze tego gracza
         if (collision.gameObject.tag == "Player")
         {
             foreach (var brick in brickMatrix)
@@ -27,6 +29,7 @@ public class BrickShower : MonoBehaviour
                     break;
                 }
             }
+            //Jeœli wszystkie cegie³ki zosta³y ujawnione niszczy ten skrypt
             if (allActive)
                 Destroy(GetComponent<BrickShower>());
         }

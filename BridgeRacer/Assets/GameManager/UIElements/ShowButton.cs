@@ -9,13 +9,13 @@ public class ShowButton : MonoBehaviour
 
     private void Start()
     {
+        //Dodaje metody do delegat
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         gameManager.endGame += Show;
         gameManager.loseGame += Show;
-        Debug.Log("cos");
 
     }
-
+    //Przeci¹¿ona metoda dodawana do delegat endGame i loseGame, w³¹czaj¹ca odpowiednie przyciski
     private void Show(string winner)
     {
         this.GetComponent<Image>().enabled = true;

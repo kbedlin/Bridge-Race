@@ -16,7 +16,7 @@ public class AIDealingWithCollision : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-
+        //Unikanie kolizji g³ównie ze œcianami
         if (!(collision.gameObject.tag == "Floor" || collision.gameObject.tag == "Stairs"))
             return;
 

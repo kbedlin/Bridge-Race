@@ -16,6 +16,7 @@ public class Animating : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //Zarz¹dzanie animacj¹ postaci
         float velocity = body.velocity.magnitude;
         bool isRunning = animator.GetBool("isRunning");
         if (!isRunning && velocity > 0.05f)

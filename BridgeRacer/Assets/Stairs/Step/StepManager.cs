@@ -4,29 +4,33 @@ using UnityEngine;
 
 public class StepManager : MonoBehaviour
 {
-    public GameObject step; //Step prefab
-    public List<GameObject> steps = new List<GameObject>(); //List of all steps in stairs
-
-    int iter = 0; //Last step
+    //Prefab schodka
+    public GameObject step; 
+    //Lista schodków w schodach
+    public List<GameObject> steps = new List<GameObject>(); 
+    //Indeks ostatniego schodka
+    int iter = 0;
+    //Rozmiar schodka y i z, obliczona z trójk¹ta prostok¹tnego jaki tworzy p³aszczyzna schodów
     readonly Vector2 stepSize = new Vector2(0.173205f, 0.3f);
-
-    public float pushForce = 70;
+    //Si³a wypchniêcia przez schody 
+    public float pushForce = 60;
 
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.tag != "Player")
             return;
-        //Position of the next step that will be added to the stairs
+        //Pozycja nastêpnego schodka, który zosta³by dodany do schodów
         Vector3 newStep = new Vector3(this.transform.position.x,
             iter * stepSize.x - stepSize.x / 2 + this.transform.position.y,
             this.transform.position.z + iter * stepSize.y + stepSize.y / 2);
+        //Pobiera stos cegie³ z BrickHoldera gracza
         Stack<Brick> bricks = collision.gameObject.GetComponent<BrickHolder>().bricks;
         if (bricks.Count != 0)
         {
+            //Jeœli gracz jest w pozycji nowego schodka, instancjuje go, ustawia jego kolor i dodaje do listy schodków
             if (collision.transform.position.z > newStep.z - stepSize.y / 2 &&
                 collision.transform.position.z < newStep.z + stepSize.y / 2)
             {
-                //Creates a step, sets it's color and adds to the list
                 GameObject stp = Instantiate(step, newStep, Quaternion.identity);
                 stp.transform.parent = this.transform.parent;
                 stp.GetComponent<Renderer>().material.color = collision.gameObject.GetComponent<Renderer>().material.color;
@@ -34,7 +38,8 @@ public class StepManager : MonoBehaviour
                 iter++;
                 ReturnBrick(bricks);
             }
-            else //If the character of different color gets on already created step change that step's color
+            //Zmienia kolor schodka po wejœciu na niego gracza o innym kolorze
+            else
             {
 
                 GameObject stepBelow = FindTheStepBelow(collision.transform.position);
@@ -51,6 +56,7 @@ public class StepManager : MonoBehaviour
             }
             
         }
+        //Jeœli gracz próbuje bez cegie³ek wejœæ na schodek o innym kolorze, jest wypychany
         else
         {
             GameObject stepBelow = FindTheStepBelow(collision.transform.position + new Vector3(0, 0, stepSize.y));
@@ -65,7 +71,8 @@ public class StepManager : MonoBehaviour
         }
     }
 
-    private GameObject FindTheStepBelow(Vector3 position) //Finds the step directly below the chosen coordinates
+    //Szuka schodka bezpoœrednio pod podan¹ pozycj¹
+    private GameObject FindTheStepBelow(Vector3 position)
     {
         foreach (var step in steps)
         {
@@ -80,7 +87,7 @@ public class StepManager : MonoBehaviour
         }
         return null;
     }
-
+    //Zwraca cegie³kê na pierwotn¹ pozycjê
     private void ReturnBrick(Stack<Brick> bricks)
     {
         Brick brick = bricks.Pop();

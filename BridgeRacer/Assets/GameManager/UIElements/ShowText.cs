@@ -9,11 +9,12 @@ public class ShowText : MonoBehaviour
 
     void Start()
     {
+        //Dodaje metody do delegat
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         gameManager.endGame += Show;
         gameManager.loseGame += Show;
     }
-
+    //Przeci¹¿ona metoda dodawana do delegat wyœwietlaj¹ca napisy koñcowe
     private void Show(string winner)
     {
         Text text = this.GetComponent<Text>();
